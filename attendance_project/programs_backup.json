@@ -1,0 +1,1 @@
+[{"model": "recognition.program", "pk": 1, "fields": {"name": "Computer Science", "code": "CS"}}, {"model": "recognition.program", "pk": 2, "fields": {"name": "Mathematics", "code": "MATH"}}, {"model": "recognition.program", "pk": 3, "fields": {"name": "Business Administration", "code": "BA"}}]

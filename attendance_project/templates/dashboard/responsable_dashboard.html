@@ -1,0 +1,182 @@
+{% extends 'recognition/base.html' %}
+{% load static %}
+
+{% block title %}Academic Manager Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Your original styles (unchanged) */
+  .dashboard-header {
+    background: linear-gradient(135deg, #1e6f5c 0%, #289672 40%, #40bfa5 100%);
+    color: white;
+    padding: 2rem 0;
+    border-radius: 0 0 2rem 2rem;
+    margin-top: -1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+  .card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: none;
+    background: #eef5fc;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.12) !important;
+  }
+  .icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    background: rgba(64, 224, 208, 0.15);
+  }
+  .icon-circle i {
+    font-size: 2.2rem;
+    color: #1f8a9c;
+  }
+  .btn-outline-primary, .btn-outline-success, .btn-outline-info,
+  .btn-outline-secondary, .btn-outline-danger {
+    border-radius: 40px;
+    padding: 0.4rem 1rem;
+    font-weight: 500;
+  }
+  .btn-outline-primary {
+    border-color: #2ba0b5;
+    color: #01596b;
+  }
+  .btn-outline-primary:hover {
+    background: #2ba0b5;
+    color: white;
+  }
+  .btn-outline-success {
+    border-color: #3ba89a;
+    color: #036656;
+  }
+  .btn-outline-success:hover {
+    background: #3ba89a;
+    color: white;
+  }
+  .btn-outline-info {
+    border-color: #4796b0;
+    color: #015368;
+  }
+  .btn-outline-info:hover {
+    background: #4796b0;
+    color: white;
+  }
+  .btn-outline-secondary {
+    border-color: #5f8ba0;
+    color: #014055;
+  }
+  .btn-outline-secondary:hover {
+    background: #5f8ba0;
+    color: white;
+  }
+  .btn-outline-danger {
+    border-color: #c2776b;
+    color: #8b3c2f;
+  }
+  .btn-outline-danger:hover {
+    background: #c2776b;
+    color: white;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header text-center mb-5">
+  <div class="container">
+    <h1 class="display-4 fw-bold"><i class="fas fa-chalkboard-teacher me-3"></i>Academic Manager Dashboard</h1>
+    <p class="lead fs-4">Welcome, {{ user.get_full_name|default:user.username }}. Monitor courses and attendance.</p>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-chart-line"></i></div>
+        <h5 class="card-title fw-bold">Statistics</h5>
+        <p class="card-text text-muted">Detailed attendance rates by program, cohort, date range.</p>
+        <a href="{% url 'attendance_statistics' %}" class="btn btn-outline-primary mt-auto">View Stats</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-calendar-alt"></i></div>
+        <h5 class="card-title fw-bold">Courses</h5>
+        <p class="card-text text-muted">Create and modify courses, assign teachers.</p>
+        <a href="{% url 'course_create' %}" class="btn btn-outline-success mt-auto">Manage Courses</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-chart-pie"></i></div>
+        <h5 class="card-title fw-bold">Student Attendance Stats</h5>
+        <p class="card-text text-muted">View attendance rates per student, filtered by program and cohort.</p>
+        <a href="{% url 'student_attendance_stats' %}" class="btn btn-outline-info mt-auto">View Stats</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-user-plus"></i></div>
+        <h5 class="card-title fw-bold">Students</h5>
+        <p class="card-text text-muted">Add new students, manage enrollments.</p>
+        <a href="{% url 'add_student' %}" class="btn btn-outline-primary mt-auto">Add Student</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-users"></i></div>
+        <h5 class="card-title fw-bold">User Management</h5>
+        <p class="card-text text-muted">View students & teachers, change passwords.</p>
+        <a href="{% url 'user_management' %}" class="btn btn-outline-secondary mt-auto">Manage</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-file-pdf"></i></div>
+        <h5 class="card-title fw-bold">PDF Reports</h5>
+        <p class="card-text text-muted">Generate absenteeism reports by period.</p>
+        <a href="{% url 'generate_report' %}" class="btn btn-outline-danger mt-auto">Generate</a>
+      </div>
+    </div>
+
+               <!-- consent_status_list and pending_withdrawal_requests card  -->
+      <div class="col-md-6 col-lg-4">
+  <div class="card h-100 text-center p-3 shadow-sm">
+    <div class="icon-circle mx-auto"><i class="fas fa-user-check"></i></div>
+    <h5 class="card-title fw-bold">Biometric Consent</h5>
+    <p class="card-text text-muted">View all students’ consent status and manage withdrawal requests.</p>
+    <div class="d-flex gap-2 justify-content-center mt-auto">
+      <a href="{% url 'consent_status_list' %}" class="btn btn-outline-primary">Consent status</a>
+      <a href="{% url 'pending_withdrawal_requests' %}" class="btn btn-outline-warning">Pending withdrawals</a>
+    </div>
+  </div>
+</div>
+
+    <!--  GDPR & Compliance card for managers -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-shield-alt"></i></div>
+        <h5 class="card-title fw-bold">Privacy & GDPR</h5>
+        <p class="card-text text-muted">Read the privacy notice and view GDPR-related logs.</p>
+        <div class="d-flex gap-2 justify-content-center mt-auto">
+          <a href="{% url 'privacy_notice' %}" class="btn btn-outline-primary">Privacy Notice</a>
+          <a href="{% url 'logs' %}?module=gdpr" class="btn btn-outline-secondary">GDPR Logs</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

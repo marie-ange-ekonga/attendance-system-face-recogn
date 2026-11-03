@@ -1,0 +1,30 @@
+# Environnement
+.venv/
+venv/
+
+# IDE
+.idea/
+
+# Bases de données
+*.db
+*.sqlite3
+
+# Modèles IA (LE PLUS IMPORTANT)
+models/
+attendance_project/models/
+*.onnx
+*.zip
+
+# Dossiers InsightFace (pour éviter d'envoyer tout le dépôt source)
+cpp-package/
+python-package/
+detection/
+recognition/
+reconstruction/
+alignment/
+challenges/
+parsing/
+benchmarks/
+tools/
+examples/
+web-demos/

@@ -1,0 +1,225 @@
+{% extends 'recognition/base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* original styles unchanged */
+  .dashboard-header {
+    background: linear-gradient(135deg, #0a6c6c 0%, #228b8b 40%, #40bfbf 100%);
+    color: white;
+    padding: 2rem 0;
+    border-radius: 0 0 2rem 2rem;
+    margin-top: -1.5rem;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+  .card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border-radius: 1.25rem;
+    overflow: hidden;
+    border: none;
+    background: #eef5fc;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.12) !important;
+  }
+  .icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    background: rgba(64, 224, 208, 0.15);
+  }
+  .icon-circle i {
+    font-size: 2.2rem;
+    color: #1f8a9c;
+  }
+  .btn-outline-primary, .btn-outline-success, .btn-outline-info {
+    border-radius: 40px;
+    padding: 0.4rem 1rem;
+    font-weight: 500;
+  }
+  .btn-outline-primary {
+    border-color: #2ba0b5;
+    color: #01596b;
+  }
+  .btn-outline-primary:hover {
+    background: #2ba0b5;
+    color: white;
+  }
+  .btn-outline-success {
+    border-color: #3ba89a;
+    color: #036656;
+  }
+  .btn-outline-success:hover {
+    background: #3ba89a;
+    color: white;
+  }
+  .btn-outline-info {
+    border-color: #4796b0;
+    color: #015368;
+  }
+  .btn-outline-info:hover {
+    background: #4796b0;
+    color: white;
+  }
+  .table {
+    background-color: #eef5fc;
+  }
+  .card-header {
+    background: #cae2f5 !important;
+    border-bottom: none;
+  }
+  .badge.bg-success {
+    background-color: #3ba89a !important;
+  }
+  .badge.bg-danger {
+    background-color: #c2776b !important;
+  }
+  .badge.bg-warning {
+    background-color: #d6a34a !important;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header text-center mb-5">
+  <div class="container">
+    <h1 class="display-4 fw-bold"><i class="fas fa-user-graduate me-3"></i>Student Dashboard</h1>
+    <p class="lead fs-4">Welcome, {{ user.get_full_name|default:user.username }}. Track your attendance.</p>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-calendar-check"></i></div>
+        <h5 class="card-title fw-bold">My History</h5>
+        <p class="card-text text-muted">Check your attendance and absences per course.</p>
+        <a href="{% url 'attendance_history' %}" class="btn btn-outline-primary mt-auto">View</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-file-upload"></i></div>
+        <h5 class="card-title fw-bold">Justify Absence</h5>
+        <p class="card-text text-muted">Submit a document for an absence.</p>
+        <a href="{% url 'student_absent_list' %}" class="btn btn-outline-success mt-auto">Justify</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-id-card"></i></div>
+        <h5 class="card-title fw-bold">My Profile</h5>
+        <p class="card-text text-muted">View and update your personal information.</p>
+        <a href="{% url 'student_profile' %}" class="btn btn-outline-info mt-auto">Profile</a>
+      </div>
+    </div>
+
+    <!-- NEW: Challenge Attendance Card (GDPR) -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-exclamation-triangle"></i></div>
+        <h5 class="card-title fw-bold">Challenge Attendance</h5>
+        <p class="card-text text-muted">Contest a false recognition or incorrect mark.</p>
+        <a href="{% url 'attendance_history' %}" class="btn btn-outline-warning mt-auto">Go to History → Challenge</a>
+        <small class="text-muted mt-2">Click the “Challenge” button next to any attendance record.</small>
+      </div>
+    </div>
+
+    <!-- GDPR Consent Card  -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 text-center p-3 shadow-sm">
+        <div class="icon-circle mx-auto"><i class="fas fa-shield-alt"></i></div>
+        <h5 class="card-title fw-bold">Biometric Consent</h5>
+        <p class="card-text">
+          Status:
+          {% if user.student_profile.biometric_consent_given %}
+            <span class="badge bg-success">Given</span>
+          {% else %}
+            <span class="badge bg-danger">Withdrawn / Not given</span>
+          {% endif %}
+        </p>
+        <div class="d-flex gap-2 justify-content-center mt-auto">
+          <a href="{% url 'privacy_notice' %}" class="btn btn-outline-primary btn-sm">Privacy Notice</a>
+          {% if user.student_profile.biometric_consent_given %}
+            <a href="{% url 'request_withdraw_consent' %}" class="btn btn-outline-danger btn-sm">Request Withdraw</a>
+          {% else %}
+            <a href="{% url 'give_consent' %}" class="btn btn-outline-success btn-sm">Give Consent</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- My Courses & Attendance Status (unchanged) -->
+  <div class="row mt-5">
+    <div class="col">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-warning text-dark">
+          <h5 class="mb-0"><i class="fas fa-book-open me-2"></i>My Courses & Attendance Status</h5>
+        </div>
+        <div class="card-body">
+          {% if courses_with_attendance %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead><tr><th>Course</th><th>Code</th><th>Latest Status</th><th>Date</th></tr></thead>
+                <tbody>
+                  {% for item in courses_with_attendance %}
+                  <tr>
+                    <td>{{ item.course.name }}
+                    <td>{{ item.course.code }}
+                    <td>{% if item.latest_attendance %}<span class="badge bg-{% if item.latest_attendance.status == 'present' %}success{% elif item.latest_attendance.status == 'absent' %}danger{% elif item.latest_attendance.status == 'late' %}warning{% else %}secondary{% endif %}">{{ item.latest_attendance.get_status_display }}</span>{% else %}<span class="badge bg-secondary">No record yet</span>{% endif %}
+                    <td>{% if item.latest_attendance %}{{ item.latest_attendance.timestamp|date:"d/m/Y H:i" }}{% else %}—{% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}<p class="text-muted text-center">You are not enrolled in any courses yet.</p>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Attendance Summary (unchanged) -->
+  <div class="row mt-4">
+    <div class="col">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0"><i class="fas fa-history me-2"></i>Recent Attendance</h5>
+        </div>
+        <div class="card-body">
+          {% if attendance_records %}
+            <div class="table-responsive">
+              <table class="table table-sm">
+                <thead><tr><th>Course</th><th>Date & Time</th><th>Status</th><th>Confidence</th></tr>
+                </thead>
+                <tbody>
+                  {% for rec in attendance_records %}
+                  <tr>
+                    <td>{{ rec.session.course.name }}
+                    <td>{{ rec.timestamp|date:"d/m/Y H:i:s" }}
+                    <td><span class="badge bg-{% if rec.status == 'present' %}success{% elif rec.status == 'absent' %}danger{% elif rec.status == 'late' %}warning{% else %}secondary{% endif %}">{{ rec.get_status_display }}</span></td>
+                    <td>{{ rec.confidence|floatformat:2 }}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="text-end mt-2"><a href="{% url 'attendance_history' %}" class="btn btn-sm btn-outline-primary">View full history</a></div>
+          {% else %}<p class="text-muted text-center">No attendance records yet.</p>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
